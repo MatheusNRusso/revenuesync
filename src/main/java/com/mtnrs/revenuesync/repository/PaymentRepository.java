@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     Optional<Payment> findByExternalId(String externalId);
+
+    boolean existsByExternalId(String externalId);
 }
