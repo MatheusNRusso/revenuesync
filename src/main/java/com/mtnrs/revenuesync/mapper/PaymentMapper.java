@@ -9,6 +9,10 @@ import org.mapstruct.Named;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * MapStruct mapper for Payment entity to DTO conversions
+ * Uses Spring component model for dependency injection
+ */
 @Mapper(componentModel = "spring")
 public interface PaymentMapper {
 
@@ -16,7 +20,7 @@ public interface PaymentMapper {
      * Converts a Payment entity to a PaymentResponseDto
      *
      * @param payment the Payment entity to convert
-     * @return the converted PaymentResponseDto
+     * @return the fully mapped PaymentResponseDto
      */
     @Mapping(target = "externalPaymentId", source = "externalId")
     @Mapping(target = "customerName", source = "payment", qualifiedByName = "extractCustomerName")
@@ -24,39 +28,26 @@ public interface PaymentMapper {
     PaymentResponseDto toDto(Payment payment);
 
     /**
-     * Extracts the customer name from the raw payload JSON
-     * The name is stored in the "name" field of the customer_details object
+     * Extracts the customer name directly from the database column.
+     * The customer_name field is populated by the database migration V2.
      *
-     * @param payment the Payment entity containing the raw payload
-     * @return the extracted customer name, or null if not found
+     * @param payment the Payment entity containing the customer name
+     * @return the customer name, or null if payment is null
      */
     @Named("extractCustomerName")
     default String extractCustomerName(Payment payment) {
-
-        if (payment == null || payment.getRawPayload() == null) {
+        if (payment == null) {
             return null;
         }
-
-        String rawPayload = payment.getRawPayload();
-
-        // Look for "name":"value" pattern in the JSON
-        int nameIndex = rawPayload.indexOf("\"name\":\"");
-        if (nameIndex > 0) {
-            int start = nameIndex + 8; // length of "name":"
-            int end = rawPayload.indexOf("\"", start);
-            if (end > start) {
-                return rawPayload.substring(start, end);
-            }
-        }
-
-        return null;
+        return payment.getCustomerName();
     }
 
     /**
-     * Formats OffsetDateTime to ISO 8601 string
+     * Formats an OffsetDateTime to ISO 8601 string format.
+     * Example: 2026-03-08T19:47:09.636651Z
      *
      * @param dateTime the OffsetDateTime to format
-     * @return formatted string or null if input is null
+     * @return formatted ISO string, or null if input is null
      */
     @Named("formatDateTime")
     default String formatDateTime(OffsetDateTime dateTime) {

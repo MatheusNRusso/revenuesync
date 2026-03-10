@@ -41,6 +41,9 @@ public class Payment {
     @Column(name = "status", nullable = false, length = 30)
     private PaymentStatus status;
 
+    @Column(name = "customer_name", length = 255)
+    private String customerName;
+
     @Column(name = "customer_email", length = 180)
     private String customerEmail;
 
@@ -60,6 +63,7 @@ public class Payment {
             BigDecimal amount,
             String currency,
             PaymentStatus status,
+            String customerName,
             String customerEmail,
             String rawPayload,
             String eventId
@@ -76,6 +80,7 @@ public class Payment {
                 .amount(amount)
                 .currency(currency.trim().toUpperCase())
                 .status(status != null ? status : PaymentStatus.UNKNOWN)
+                .customerName(customerName != null ? customerName.trim() : null)
                 .customerEmail(normalizeEmail(customerEmail))
                 .rawPayload(rawPayload)
                 .eventId(eventId)

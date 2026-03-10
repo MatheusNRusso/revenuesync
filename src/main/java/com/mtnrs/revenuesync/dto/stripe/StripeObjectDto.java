@@ -13,6 +13,9 @@ public record StripeObjectDto(
         Map<String, String> metadata
 ) {
     public record CustomerDetailsDto(
-            @JsonProperty("email") String email
+            @JsonProperty("email") String email,
+
+            @JsonProperty("name")
+            String name
     ) {}
 }

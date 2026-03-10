@@ -27,19 +27,15 @@ public class Lead {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(nullable = false, length = 180)
     private String email;
-
 
     @Column(length = 180)
     private String name;
 
-
     @Enumerated(EnumType.STRING)
     @Column(length = 60)
     private LeadSource source;
-
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "raw_payload", columnDefinition = "jsonb")
@@ -52,12 +48,10 @@ public class Lead {
             String email,
             String name,
             LeadSource source,
-            String rawPayload
-    ) {
+            String rawPayload) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("email must not be null or blank");
         }
-
         return Lead.builder()
                 .email(email.trim().toLowerCase())
                 .name(name)
