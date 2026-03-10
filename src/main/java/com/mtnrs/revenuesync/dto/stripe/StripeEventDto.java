@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record StripeEventDto(
         String id,
         String type,
-        @JsonProperty("created") Long createdEpochSeconds,
+        @JsonProperty("created")
+        Long createdEpochSeconds,
         StripeEventDataDto data
 ) {}

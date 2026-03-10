@@ -69,6 +69,7 @@ public class PaymentService {
             BigDecimal amount,
             String currency,
             PaymentStatus status,
+            String customerName,
             String customerEmail,
             String rawPayload,
             String eventId
@@ -84,7 +85,7 @@ public class PaymentService {
                 .orElseGet(() -> {
                     log.debug("Creating new payment for externalId: {}", externalId);
                     return paymentRepository.save(
-                            Payment.of(externalId, amount, currency, status, customerEmail, rawPayload, eventId)
+                            Payment.of(externalId, amount, currency, status, customerName, customerEmail, rawPayload, eventId)
                     );
                 });
     }

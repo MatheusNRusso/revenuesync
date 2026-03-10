@@ -53,6 +53,7 @@ public class StripeWebhookService {
         String externalId = obj.id();
         String currency = obj.currency();
         String email = obj.customerDetails() != null ? obj.customerDetails().email() : null;
+        String name = obj.customerDetails() != null ? obj.customerDetails().name() : null;
 
         BigDecimal amount = obj.amountTotal() == null
                 ? BigDecimal.ZERO
@@ -62,21 +63,21 @@ public class StripeWebhookService {
                 ? PaymentStatus.SUCCEEDED
                 : PaymentStatus.PROCESSING;
 
+
         Payment payment = paymentService.upsertFromStripe(
                 externalId,
                 amount,
                 currency,
                 status,
+                name,
                 email,
                 rawPayload,
                 event.id()
         );
 
-        // Só dispara conversões se estiver confirmado
         if (payment.getStatus() == PaymentStatus.SUCCEEDED) {
             Long paymentId = payment.getId();
 
-            // TODO: montar requestJson correto para Meta/Google (com clickIds, hash email, etc.)
             String metaRequestJson = "{\"event\":\"Purchase\",\"value\":" + amount + "}";
             String googleRequestJson = "{\"conversion\":\"Purchase\",\"value\":" + amount + "}";
 
